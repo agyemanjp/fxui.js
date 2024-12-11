@@ -1,5 +1,5 @@
 {
-	"name": "fxui",
+	"name": "@agyemanjp/fxui",
 	"version": "0.0.1",
 	"description": "Functional, Declarative, Component-based UI Library that works with JSX",
 	"main": "index.js",
