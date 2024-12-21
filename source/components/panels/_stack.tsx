@@ -16,38 +16,26 @@ export const StackPanel: ComponentStateless<LayoutProps & HtmlProps> = (props) =
 
 	const alignItems = () => {
 		switch (orientation === "vertical" ? (itemsAlignH) : (itemsAlignV)) {
-			case "start":
-				return "flex-start"
-			case "end":
-				return "flex-end"
-			case "center":
-				return "center"
-			case "stretch":
-				return "stretch"
-			default:
-				return "initial"
+			case "start": return "flex-start"
+			case "end": return "flex-end"
+			case "center": return "center"
+			case "stretch": return "stretch"
+			default: return "initial"
 		}
 	}
 
 	const justifyContent = () => {
 		switch (orientation === "vertical" ? (itemsAlignV) : (itemsAlignH)) {
-			case "start":
-				return "flex-start"
-			case "end":
-				return "flex-end"
-			case "center":
-				return "center"
-			case "uniform":
-				return "space-evenly"
-			case "dock":
-				return "space-between"
-			default:
-				return "initial"
+			case "start": return "flex-start"
+			case "end": return "flex-end"
+			case "center": return "center"
+			case "uniform": return "space-evenly"
+			case "dock": return "space-between"
+			default: return "initial"
 		}
 	}
 
-	return <div
-		{...htmlProps}
+	return <div {...htmlProps}
 		style={{
 			...style,
 			display: "flex",

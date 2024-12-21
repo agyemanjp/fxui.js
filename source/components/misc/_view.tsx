@@ -1,7 +1,7 @@
 
-import { mergeDeep, stringify, type ArgsType } from "@agyemanjp/standard"
+import { stringify, type ArgsType } from "@agyemanjp/standard"
 
-import { createElement, Fragment, isProperElt, type UIElement } from "../../"
+import { createElement, isProperElt, type UIElement } from "../../"
 import type { ComponentArgs, Component } from "../../common"
 import type { HtmlProps, LayoutProps } from "../common"
 import type { CSSProperties } from "../../html"
@@ -30,14 +30,12 @@ export function View<T>(props: ComponentArgs<ViewProps<T>>) {
 
 	return <Layout
 		orientation={orientation}
-		itemsAlignH={itemsAlignV}
-		itemsAlignV={itemsAlignH}
+		itemsAlignH={itemsAlignH}
+		itemsAlignV={itemsAlignV}
 		style={style}
 		{...htmlProps}>
 
-		{[...sourceData].map((datum, index) => <ItemTemplate
-			value={datum}
-			index={index}
+		{[...sourceData].map((datum, index) => <ItemTemplate value={datum} index={index}
 			style={{ height: "auto", width: "auto", ...itemStyle }}
 		/>)}
 	</Layout>

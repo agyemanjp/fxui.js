@@ -25,7 +25,7 @@ export const LinkUI: Component<LinkInfo & HtmlProps> = (args) => {
 
 	return <StackPanel orientation={orientation}
 		itemsAlignH={itemsAlignH ?? "center"} itemsAlignV={itemsAlignV ?? "center"}
-		style={{ gap: "0.3rem", ...style }} {...htmlProps}>
+		style={{ gap: "0.25rem", ...style }} {...htmlProps}>
 
 		{getEltForContent(before)}
 		<a href={url}>{getEltForContent(anchor)}</a>

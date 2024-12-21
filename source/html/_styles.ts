@@ -807,6 +807,11 @@ interface _CSSProperties {
 		| "auto"
 		| CSSLength
 	)
+	textSizeAdjust?: string | null
+	msTextSizeAdjust?: string | null
+	mozTextSizeAdjust?: string | null
+	webkitTextSizeAdjust?: string | null
+
 	msContentZoomChaining?: string | null
 	msContentZoomLimit?: string | null
 	msContentZoomLimitMax?: unknown
@@ -847,7 +852,6 @@ interface _CSSProperties {
 	msScrollSnapY?: string | null
 	msScrollTranslation?: string | null
 	msTextCombineHorizontal?: string | null
-	msTextSizeAdjust?: unknown
 	msTouchAction?: string | null
 	msTouchSelect?: string | null
 	msUserSelect?: string | null
@@ -1148,7 +1152,6 @@ interface _CSSProperties {
 	webkitPerspectiveOrigin?: string | null
 	webkitTapHighlightColor?: string | null
 	webkitTextFillColor?: string | null
-	webkitTextSizeAdjust?: unknown
 	webkitTransform?: string | null
 	webkitTransformOrigin?: string | null
 	webkitTransformStyle?: string | null
