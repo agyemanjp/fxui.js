@@ -1,7 +1,5 @@
 import { getIdUnique } from "@agyemanjp/standard"
 import { createElement, type InputComponent, type InputProps } from "../../"
-import type { Component } from "../../common"
-import type { InputHTMLAttributes } from "../../html"
 
 
 export const SwitchUI: InputComponent<Props> = props => {

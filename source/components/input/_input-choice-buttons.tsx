@@ -1,7 +1,7 @@
 import { isObject } from "@agyemanjp/standard"
 
-import { createElement, StackPanel } from "../../"
-import type { InputChoiceProps, InputComponent, InputMultiChoiceProps } from "./common"
+import { createElement, normalizedChoices, StackPanel, type CSSProperties } from "../../"
+import type { InputChoice, InputComponent, InputProps } from "./common"
 import { View, type ViewProps } from "../misc/_view"
 
 export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & PropsCommon> = ((props, setProps) => {
@@ -70,6 +70,92 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 	/>
 }) //satisfies (InputComponent<any>)
 
+/** Basic props for input element with single-selection choices */
+export type InputChoiceProps<TVal = string> = InputProps<TVal> & {
+	choices: InputChoice<TVal>[]
+	selectedItemStyle?: CSSProperties
+}
+
+export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<string> & PropsCommon> = ((props, setProps) => {
+	const {
+		value,
+		onValueChanged,
+		autoRefresh,
+		choices,
+		layout,
+		orientation,
+		selectedItemStyle,
+		itemStyle,
+		selectAllLabel,
+		style,
+		disabled,
+		children,
+		...restOfProps
+	} = props
+
+	return <View
+		sourceData={[...choices ?? [], ...(selectAllLabel ? [selectAllLabel] : [])]}
+		layout={layout ?? StackPanel}
+		orientation={orientation}
+		itemTemplate={_ => {
+			const { value: choice, children, index } = _
+			const choiceValue = isObject(choice) ? choice.value : choice
+			const choiceTitle = isObject(choice) ? choice.title : choice
+
+			const selected = (value ?? []).includes(choiceValue)
+			const selectAll = (selectAllLabel && index === choices.length)
+			// console.log(`selected: ${selected}`)
+
+			return <div
+				onClick={(e) => {
+					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
+					const effectiveValue = value ?? []
+					const newValues = selectAll
+						? normalizedChoices(choices) // select all choices
+						: effectiveValue.includes(choiceValue)
+							? effectiveValue.filter(_ => _ !== choiceValue)
+							: [...effectiveValue, choiceValue]
+
+					if (setProps && (autoRefresh ?? true)) setProps({ value: newValues })
+					onValueChanged?.(newValues)
+				}}
+				style={{
+					height: "2rem",
+					padding: "0.25rem",
+					backgroundPosition: "0 -90px",
+					borderLeft: "thin solid silver",
+					textAlign: "center",
+					cursor: "pointer",
+
+					...itemStyle,
+					...(selected ? selectedItemStyle : {}),
+					fontStyle: selectAll ? "italic" : "normal"
+				}}>
+				{choiceTitle}
+			</div>
+		}}
+		style={{
+			border: "thin solid silver",
+			borderRadius: "1rem",
+			overflow: "hidden",
+			...style
+		}}
+		{...restOfProps}
+	/>
+}) //satisfies (InputComponent<any>)
+
+/** Basic props for input element with multiple-selection choices */
+export type InputMultiChoiceProps<TVal = string> = InputProps<TVal[]> & {
+	choices: InputChoice<TVal>[]
+	selectedItemStyle?: CSSProperties
+
+	/** Label for optional select all button */
+	selectAllLabel?: string
+}
+
+type PropsCommon = Pick<ViewProps, "layout" | "orientation" | "itemsAlignH" | "itemsAlignV" | "itemStyle">
+
+
 /* const inputChoiceStyles = {
 		button: {
 			// minWidth: "5rem",
@@ -95,69 +181,3 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 		}
 	}
 */
-
-export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<string> & PropsCommon> = ((props, setProps) => {
-	const {
-		value,
-		onValueChanged,
-		autoRefresh,
-		choices,
-		layout,
-		orientation,
-		selectedItemStyle,
-		itemStyle,
-		style,
-		disabled,
-		children,
-		...restOfProps
-	} = props
-
-	return <View
-		sourceData={choices ?? []}
-		itemTemplate={_ => {
-			const { value: choice, children, index } = _
-			const choiceValue = isObject(choice) ? choice.value : choice
-			const choiceTitle = isObject(choice) ? choice.title : choice
-
-			const selected = (value ?? []).includes(choiceValue)
-			// console.log(`selected: ${selected}`)
-
-			return <div
-				onClick={(e) => {
-					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
-					const effectiveValue = value ?? []
-					const newValues = effectiveValue.includes(choiceValue)
-						? effectiveValue.filter(_ => _ !== choiceValue)
-						: [...effectiveValue, choiceValue]
-
-					if (setProps && (autoRefresh ?? true)) setProps({ value: newValues })
-					onValueChanged?.(newValues)
-				}}
-				style={{
-					// default
-					height: "2rem",
-					padding: "0.25rem",
-					backgroundPosition: "0 -90px",
-					borderLeft: "thin solid purple",
-					textAlign: "center",
-					cursor: "pointer",
-					...itemStyle,
-					...(selected ? selectedItemStyle : {})
-				}}>
-				{choiceTitle}
-			</div>
-		}}
-		layout={layout ?? StackPanel}
-		orientation={orientation}
-		style={{
-			border: "thin solid silver",
-			borderRadius: "1rem",
-			overflow: "hidden",
-			...style
-		}}
-		{...restOfProps}
-	/>
-}) //satisfies (InputComponent<any>)
-
-
-type PropsCommon = Pick<ViewProps, "layout" | "orientation" | "itemsAlignH" | "itemsAlignV" | "itemStyle">

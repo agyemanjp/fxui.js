@@ -1,6 +1,6 @@
 import { getIdUnique } from "@agyemanjp/standard"
 
-import { createElement, Fragment, normalizedChoices, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
+import { createElement, Fragment, normalizedChoices, type InputComponent, type InputProps } from "../.."
 
 export const InputText: InputComponent<Props> = (props, setProps) => {
 	const {

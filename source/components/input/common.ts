@@ -3,32 +3,23 @@ import { isObject } from "@agyemanjp/standard"
 import type { CSSProperties } from "../../html"
 import type { Component } from "../../common"
 
+export type InputComponent<P extends InputProps<any>> = Component<P>
+
 /** Basic props for input element */
-export type InputProps<TVal/*, X extends Rec | undefined = undefined*/> = {
+export type InputProps<TVal> = {
 	value?: TVal
-	onValueChanged?: (newVal: TVal/*, xtra: X*/) => any
-	/** Auto update UI locally? Otherwise defer update to parent */
-	autoRefresh?: boolean
+	onValueChanged?: (newVal: TVal) => any
 	style?: CSSProperties
 	disabled?: boolean
 	children?: never
+
+	/** Auto update UI locally? Otherwise defer update to parent */
+	autoRefresh?: boolean
 }
 
-/** Basic props for input element with single-selection choices */
-export type InputChoiceProps<TVal = string> = InputProps<TVal> & {
-	choices: (TVal | { value: TVal, title: string })[]
-	selectedItemStyle?: CSSProperties
-}
-
-/** Basic props for input element with multiple-selection choices */
-export type InputMultiChoiceProps<TVal = string> = InputProps<TVal[]> & {
-	choices: (TVal | { value: TVal, title: string })[]
-	selectedItemStyle?: CSSProperties
-}
-
-
-export type InputComponent<P extends InputProps<any>> = Component<P>
-
-export function normalizedChoices<T>(choices: InputChoiceProps<T>["choices"]) {
+/** Return input choices normalized to an array of the core type */
+export function normalizedChoices<T>(choices: InputChoice<T>[]) {
 	return choices.map(choice => (isObject(choice) && "value" in choice) ? choice.value : choice)
 }
+
+export type InputChoice<TVal> = (TVal | { value: TVal, title: string })

@@ -1,8 +1,9 @@
 
 import { createElement } from "../../element"
-import type { InputChoiceProps, InputComponent } from "./common"
+import type { CSSProperties } from "../../html/_styles"
+import type { InputChoice, InputComponent, InputProps } from "./common"
 
-export const DropdownChoiceInput: InputComponent<InputChoiceProps<string>> = (props, setProps) => {
+export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 	const {
 		autoRefresh,
 		value,
@@ -37,3 +38,7 @@ export const DropdownChoiceInput: InputComponent<InputChoiceProps<string>> = (pr
 
 
 
+type Props = InputProps<string> & {
+	choices: InputChoice<string>[]
+	selectedItemStyle?: CSSProperties
+}
