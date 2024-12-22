@@ -1,6 +1,6 @@
-import { getIdUnique } from "@agyemanjp/standard"
+import { getIdUnique, type OmitX } from "@agyemanjp/standard"
 
-import { createElement, Fragment, normalizedChoices, type InputComponent, type InputProps } from "../.."
+import { createElement, Fragment, normalizedChoices, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
 
 export const InputText: InputComponent<Props> = (props, setProps) => {
 	const {
@@ -40,7 +40,7 @@ export const InputText: InputComponent<Props> = (props, setProps) => {
 }
 
 
-type Props = InputProps<string> & {
+type Props = InputProps<string> & OmitX<InputHTMLAttributes<HTMLInputElement>, "type"> & {
 	choices?: string[]
 	type?: "text" | "long-text" | "number" | "email" | "password"
 }

@@ -5,11 +5,13 @@ import type { InputChoice, InputComponent, InputProps } from "./common"
 
 export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 	const {
-		autoRefresh,
 		value,
+		autoRefresh,
 		onValueChanged,
 		choices,
 		style,
+		selectedItemStyle,
+		optionStyle,
 		children,
 		...htmlProps
 	} = props
@@ -25,10 +27,12 @@ export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 		{choices.map((option, index) =>
 			<option
 				selected={option === value}
-				// style={{ color: props.disabledIndexes && props.disabledIndexes.indexOf(index) !== -1 ? "gray" : "black" }}
-				// disabled={props.disabledIndexes && props.disabledIndexes.indexOf(index) !== -1 ? true : undefined}
 				value={typeof option === "string" ? option : option.value}
-				title={typeof option === "string" ? option : option.title}>
+				title={typeof option === "string" ? option : option.title}
+				style={{
+					...option === value ? selectedItemStyle ?? {} : {},
+					...optionStyle ?? {}
+				}}>
 
 				{typeof option === "string" ? option : option.title}
 			</option>
@@ -41,4 +45,5 @@ export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 type Props = InputProps<string> & {
 	choices: InputChoice<string>[]
 	selectedItemStyle?: CSSProperties
+	optionStyle?: CSSProperties
 }
