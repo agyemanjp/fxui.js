@@ -4,8 +4,6 @@ import { createElement, Fragment } from "../.."
 import type { Component } from "../../common"
 import type { HtmlProps, Icon, LayoutProps } from "../common"
 import type { CSSProperties, ButtonHTMLAttributes } from "../../html"
-import { StackPanel } from "../panels/_stack"
-
 
 export const CmdButton: Component<CommandBoxProps> = (props) => {
 	const defaultProps = {
@@ -32,26 +30,20 @@ export const CmdButton: Component<CommandBoxProps> = (props) => {
 		orientation,
 		iconPlacement,
 		icon: Icon,
+		type,
 		style,
 		children,
 		...htmlProps
 	} = mergeDeep()(defaultProps, props)
 
-	// console.log(`RestOfProps for CommandBox: ${stringify(htmlProps)}`)
 
-	return <button {...htmlProps} style={{ ...style }}>
-		<StackPanel
-			orientation={orientation}
-			itemsAlignV="center"
-			style={{ height: "100%", padding: "0.1rem", gap: "0.25rem" }}>
-			{Icon
-				? iconPlacement === "before"
-					? <><Icon style={{}} />{children ?? ""}</>
-					: <>{children ?? ""}<Icon style={{}} /></>
-				: children
-			}
-		</StackPanel>
-
+	return <button type={type ?? "button"} {...htmlProps} style={{ padding: "0.1rem", gap: "0.25rem", ...style }}>
+		{Icon
+			? iconPlacement === "before"
+				? <><Icon style={{}} />{children ?? ""}</>
+				: <>{children ?? ""}<Icon style={{}} /></>
+			: children
+		}
 	</button>
 }
 

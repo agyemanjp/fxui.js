@@ -16,13 +16,14 @@ export type InputProps<TVal/*, X extends Rec | undefined = undefined*/> = {
 
 /** Basic props for input element with single-selection choices */
 export type InputChoiceProps<TVal = string> = InputProps<TVal> & {
-	choices: (TVal /*| [TVal, string]*/ | { value: TVal, title: string })[]
+	choices: (TVal | { value: TVal, title: string })[]
 	selectedItemStyle?: CSSProperties
 }
 
 /** Basic props for input element with multiple-selection choices */
-export type InputMultiChoiceProps<TVal = string> = InputChoiceProps<TVal[]> & {
+export type InputMultiChoiceProps<TVal = string> = InputProps<TVal[]> & {
 	choices: (TVal | { value: TVal, title: string })[]
+	selectedItemStyle?: CSSProperties
 }
 
 

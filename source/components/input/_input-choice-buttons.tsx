@@ -133,13 +133,28 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 					if (setProps && (autoRefresh ?? true)) setProps({ value: newValues })
 					onValueChanged?.(newValues)
 				}}
-				style={{ ...itemStyle, ...(selected ? selectedItemStyle : {}) }}>
+				style={{
+					// default
+					height: "2rem",
+					padding: "0.25rem",
+					backgroundPosition: "0 -90px",
+					borderLeft: "thin solid purple",
+					textAlign: "center",
+					cursor: "pointer",
+					...itemStyle,
+					...(selected ? selectedItemStyle : {})
+				}}>
 				{choiceTitle}
 			</div>
 		}}
 		layout={layout ?? StackPanel}
 		orientation={orientation}
-		style={{ ...style }}
+		style={{
+			border: "thin solid silver",
+			borderRadius: "1rem",
+			overflow: "hidden",
+			...style
+		}}
 		{...restOfProps}
 	/>
 }) //satisfies (InputComponent<any>)
