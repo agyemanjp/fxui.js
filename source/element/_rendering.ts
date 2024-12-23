@@ -1,11 +1,17 @@
-import { stringify, indexed, type Rec, hasValue, prependIfNotEmpty, assert, deepEquals, filter, type ArgsType, type RecursivePartial, mergeDeep } from "@agyemanjp/standard"
 import { default as morph } from "morphdom"
+import { indexed, hasValue, prependIfNotEmpty, assert, deepEquals, type ArgsType, type Rec } from "@agyemanjp/standard"
 
 import type { StdEltProps } from "../common"
 import { type DOMElement, createDOMShallow, isTextDOM, stringifyAttributes, selfClosingTags, eventNames } from "../html"
 import { type UIElement, isProperElt, getChildren, isIntrinsicElt, type ComponentElement, type IntrinsicElement, type ProperElement, type ValueElement, isFragmentElt } from "./common"
 import { type UITreePosition, getCompInstanceId, getEffectiveHtmlId, INITIAL_UI_TREE_POSITION, injectHtmlId, instanceToHtmlId } from "./_identity"
 import { getCache, type ComponentInstanceInfo } from "./_cache"
+
+export function mountElement(uiElt: UIElement, domContainerElt: HTMLElement) {
+	const domElt = render(uiElt)
+	assert(domElt, `Result of render is undefined; should be DOM element`)
+	morph(domContainerElt, domElt)
+}
 
 /** Renders an UI element to a DOM node */
 export function render<T extends StdEltProps>(elt: UIElement<T>, position?: UITreePosition): DOMElement | DocumentFragment | Text | undefined {
@@ -70,12 +76,6 @@ export function renderToString<P extends Rec>(elt: UIElement<P>, position?: UITr
 
 		: globalThis.String(leaf ?? "")
 	)
-}
-
-export function mountElement(uiElt: UIElement, domContainerElt: HTMLElement) {
-	const domElt = render(uiElt)
-	assert(domElt, `Result of render is undefined; should be DOM element`)
-	morph(domContainerElt, domElt)
 }
 
 /** Get leaf of input element, by recursively executing it as far as possible, and injecting standard attributes.
@@ -157,14 +157,14 @@ export function getLeaf<P extends Rec>(elt: ProperElement<P>, position?: UITreeP
 
 /** Execute component element, with an optional instance id for injecting a setProps argument */
 function executeCompElement<P extends StdEltProps>(elt: ComponentElement<P>, compInstanceId?: string) {
-	const effSetPropsFx: ArgsType<typeof elt.type>[1] = (compInstanceId
+	const effectiveSetPropsFunction: ArgsType<typeof elt.type>[1] = (compInstanceId
 		? (newPropsDelta, refreshUI) => setProps(compInstanceId, newPropsDelta, refreshUI)
 		: undefined
 	)
-	return elt.type({ ...elt.props, children: elt.children }, effSetPropsFx)
+	return elt.type({ ...elt.props, children: elt.children }, effectiveSetPropsFunction)
 }
 
-/** Update properties of element found at input instance id with input delta */
+/** Update properties of element referenced by the input instance id with input delta, and optionally refresh UI */
 function setProps<P extends Rec>(compInstanceId: string, newPropsDelta: Partial<P>, refreshUI = true) {
 	// console.log(`Starting setProps to ${stringify(newPropsDelta)} on ${elt.type.name}`)
 
@@ -206,19 +206,19 @@ function setProps<P extends Rec>(compInstanceId: string, newPropsDelta: Partial<
 	}
 }
 
-// /** Merge new partial props over existing props of a proper element */
-// function updateProps<Elt extends ProperElement<P>, P extends StdEltProps>(elt: Elt, newPropsDelta: RecursivePartial<P>): Elt {
-// 	return elt.type !== ""
-// 		? mergeDeep()(elt, newPropsDelta) as Elt //{ ...elt, props: { ...elt.props, ...newPropsDelta } }
-// 		: elt
-// }
-
 /** Merge new partial props over existing props of a proper element */
 function updateProps<Elt extends ProperElement<P>, P extends StdEltProps>(elt: Elt, newPropsDelta: Partial<P>): Elt {
 	return elt.type !== ""
 		? { ...elt, props: { ...elt.props, ...newPropsDelta } }
 		: elt
 }
+
+/** Merge new partial props over existing props of a proper element */
+/*function updateProps<Elt extends ProperElement<P>, P extends StdEltProps>(elt: Elt, newPropsDelta: RecursivePartial<P>): Elt {
+	return elt.type !== ""
+		? mergeDeep()(elt, newPropsDelta) as Elt //{ ...elt, props: { ...elt.props, ...newPropsDelta } }
+		: elt
+}*/
 
 /** Re-renders part of the UI represented by input element; For execution on browser only */
 /*export function refresh(instanceId: string): void {

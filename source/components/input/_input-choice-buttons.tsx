@@ -30,7 +30,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 			const selected = choiceValue === value
 			// console.log(`selected: ${choiceValue === value}`)
 
-			return <div
+			return <StackPanel itemsAlignH="center" itemsAlignV="center"
 				onClick={(e) => {
 					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
 					if (setProps && (autoRefresh ?? true)) setProps({ value: choiceValue })
@@ -55,8 +55,9 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 						: {}
 					)
 				}}>
+
 				{choiceTitle}
-			</div>
+			</StackPanel>
 		}}
 		layout={layout ?? StackPanel}
 		orientation={orientation}
