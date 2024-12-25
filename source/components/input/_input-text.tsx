@@ -42,5 +42,5 @@ export const InputText: InputComponent<Props> = (props, setProps) => {
 
 type Props = InputProps<string> & OmitX<InputHTMLAttributes<HTMLInputElement>, "type"> & {
 	choices?: string[]
-	type?: "text" | "long-text" | "number" | "email" | "password"
+	type?: "long-text" | "text" | "number" | "email" | "password" | "date" | "time" | "datetime-local" | "month" | "week" | "color" | "url" | "tel" | "range"
 }
