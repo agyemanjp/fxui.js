@@ -1,7 +1,7 @@
 import { isObject } from "@agyemanjp/standard"
 
-import { createElement, normalizedChoices, StackPanel, type CSSProperties } from "../../"
-import type { InputChoice, InputComponent, InputProps } from "./common"
+import { createElement, inputDomainTuples, inputDomainValues, StackPanel, type CSSProperties } from "../../"
+import type { InputDomain, InputComponent, InputProps } from "./common"
 import { View, type ViewProps } from "../misc/_view"
 
 export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & PropsCommon> = ((props, setProps) => {
@@ -9,7 +9,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 		value,
 		onValueChanged,
 		autoRefresh,
-		choices,
+		domain,
 		layout,
 		orientation,
 		selectedItemStyle,
@@ -21,20 +21,18 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 	} = props
 
 	return <View
-		sourceData={choices ?? []}
+		sourceData={inputDomainTuples(domain) ?? []}
 		itemTemplate={_ => {
 			const { value: choice, children, index } = _
-			const choiceValue = isObject(choice) ? choice.value : choice
-			const choiceTitle = isObject(choice) ? choice.title : choice
 
-			const selected = choiceValue === value
+			const selected = choice.value === value
 			// console.log(`selected: ${choiceValue === value}`)
 
 			return <StackPanel itemsAlignH="center" itemsAlignV="center"
 				onClick={(e) => {
 					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
-					if (setProps && (autoRefresh ?? true)) setProps({ value: choiceValue })
-					onValueChanged?.(choiceValue)
+					if (setProps && (autoRefresh ?? true)) setProps({ value: choice.value })
+					onValueChanged?.(choice.value)
 				}}
 				style={{
 					// default
@@ -56,7 +54,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 					)
 				}}>
 
-				{choiceTitle}
+				{choice.title}
 			</StackPanel>
 		}}
 		layout={layout ?? StackPanel}
@@ -73,7 +71,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 
 /** Basic props for input element with single-selection choices */
 export type InputChoiceProps<TVal = string> = InputProps<TVal> & {
-	choices: InputChoice<TVal>[]
+	domain: InputDomain<TVal>
 	selectedItemStyle?: CSSProperties
 }
 
@@ -82,7 +80,7 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 		value,
 		onValueChanged,
 		autoRefresh,
-		choices,
+		domain,
 		layout,
 		orientation,
 		selectedItemStyle,
@@ -94,17 +92,17 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 		...restOfProps
 	} = props
 
+	const domainTuples = inputDomainTuples(domain)
+
 	return <View
-		sourceData={[...choices ?? [], ...(selectAllLabel ? [selectAllLabel] : [])]}
+		sourceData={[...domainTuples, ...(selectAllLabel ? [{ value: selectAllLabel, title: selectAllLabel }] : [])]}
 		layout={layout ?? StackPanel}
 		orientation={orientation}
 		itemTemplate={_ => {
 			const { value: choice, children, index } = _
-			const choiceValue = isObject(choice) ? choice.value : choice
-			const choiceTitle = isObject(choice) ? choice.title : choice
 
-			const selected = (value ?? []).includes(choiceValue)
-			const selectAll = (selectAllLabel && index === choices.length)
+			const selected = (value ?? []).includes(choice.value)
+			const selectAll = (selectAllLabel && index === domainTuples.length)
 			// console.log(`selected: ${selected}`)
 
 			return <div
@@ -112,10 +110,10 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
 					const effectiveValue = value ?? []
 					const newValues = selectAll
-						? normalizedChoices(choices) // select all choices
-						: effectiveValue.includes(choiceValue)
-							? effectiveValue.filter(_ => _ !== choiceValue)
-							: [...effectiveValue, choiceValue]
+						? inputDomainValues(domain) // select all choices
+						: effectiveValue.includes(choice.value)
+							? effectiveValue.filter(_ => _ !== choice.value)
+							: [...effectiveValue, choice.value]
 
 					if (setProps && (autoRefresh ?? true)) setProps({ value: newValues })
 					onValueChanged?.(newValues)
@@ -132,7 +130,7 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 					...(selected ? selectedItemStyle : {}),
 					fontStyle: selectAll ? "italic" : "normal"
 				}}>
-				{choiceTitle}
+				{choice.title}
 			</div>
 		}}
 		style={{
@@ -147,7 +145,7 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 
 /** Basic props for input element with multiple-selection choices */
 export type InputMultiChoiceProps<TVal = string> = InputProps<TVal[]> & {
-	choices: InputChoice<TVal>[]
+	domain: InputDomain<TVal>
 	selectedItemStyle?: CSSProperties
 
 	/** Label for optional select all button */

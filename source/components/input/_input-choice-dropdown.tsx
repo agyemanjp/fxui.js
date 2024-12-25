@@ -1,7 +1,7 @@
 
 import { createElement } from "../../element"
 import type { CSSProperties } from "../../html/_styles"
-import type { InputChoice, InputComponent, InputProps } from "./common"
+import { inputDomainTuples, type InputComponent, type InputDomain, type InputProps } from "./common"
 
 export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 	const {
@@ -24,13 +24,13 @@ export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 		}}
 		{...htmlProps}>
 
-		{choices.map((option, index) =>
+		{inputDomainTuples(choices).map((option, index) =>
 			<option
-				selected={option === value}
-				value={typeof option === "string" ? option : option.value}
-				title={typeof option === "string" ? option : option.title}
+				selected={option.value === value}
+				value={option.value}
+				title={option.title}
 				style={{
-					...option === value ? selectedItemStyle ?? {} : {},
+					...option.value === value ? selectedItemStyle ?? {} : {},
 					...optionStyle ?? {}
 				}}>
 
@@ -43,7 +43,7 @@ export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 
 
 type Props = InputProps<string> & {
-	choices: InputChoice<string>[]
+	choices: InputDomain<string>
 	selectedItemStyle?: CSSProperties
 	optionStyle?: CSSProperties
 }

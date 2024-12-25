@@ -1,4 +1,4 @@
-import { isObject } from "@agyemanjp/standard"
+import { isArray } from "@agyemanjp/standard"
 
 import type { CSSProperties } from "../../html"
 import type { Component } from "../../common"
@@ -17,9 +17,18 @@ export type InputProps<TVal> = {
 	autoRefresh?: boolean
 }
 
-/** Return input choices normalized to an array of the core type */
-export function normalizedChoices<T>(choices: InputChoice<T>[]) {
-	return choices.map(choice => (isObject(choice) && "value" in choice) ? choice.value : choice)
+/** Return input domain values array */
+export function inputDomainValues<T>(choices: InputDomain<T>) {
+	return isArray(choices)
+		? choices.map(choice => choice.value)
+		: choices.values
 }
 
-export type InputChoice<TVal> = (TVal | { value: TVal, title: string })
+/** Return input domain tuples (value/title) array */
+export function inputDomainTuples<T>(choices: InputDomain<T>) {
+	return isArray(choices)
+		? choices
+		: choices.values.map(v => ({ value: v, title: String(v) }))
+}
+
+export type InputDomain<TVal> = { values: TVal[] } | ({ value: TVal, title: string }[])

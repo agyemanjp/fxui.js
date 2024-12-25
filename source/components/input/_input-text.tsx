@@ -1,6 +1,6 @@
 import { getIdUnique, type OmitX } from "@agyemanjp/standard"
 
-import { createElement, Fragment, normalizedChoices, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
+import { createElement, Fragment, inputDomainValues, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
 
 export const InputText: InputComponent<Props> = (props, setProps) => {
 	const {
@@ -30,7 +30,7 @@ export const InputText: InputComponent<Props> = (props, setProps) => {
 
 			{choices && choices.length > 0
 				? <datalist id={`list-${id}`}>
-					{normalizedChoices(choices).map((option, index) =>
+					{choices.map((option, index) =>
 						<option value={option} title={option}>{option}</option>
 					)}
 				</datalist>
