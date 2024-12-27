@@ -1,6 +1,6 @@
 import { isObject } from "@agyemanjp/standard"
 
-import { createElement, inputDomainTuples, inputDomainValues, StackPanel, type CSSProperties } from "../../"
+import { createElement, inputDomainTuples, StackPanel, type CSSProperties } from "../../"
 import type { InputDomain, InputComponent, InputProps } from "./common"
 import { View, type ViewProps } from "../misc/_view"
 
@@ -21,18 +21,18 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 	} = props
 
 	return <View
-		sourceData={inputDomainTuples(domain) ?? []}
+		sourceData={(domain) ?? []}
 		itemTemplate={_ => {
 			const { value: choice, children, index } = _
 
-			const selected = choice.value === value
+			const selected = choice[0] === value
 			// console.log(`selected: ${choiceValue === value}`)
 
 			return <StackPanel itemsAlignH="center" itemsAlignV="center"
 				onClick={(e) => {
 					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
-					if (setProps && (autoRefresh ?? true)) setProps({ value: choice.value })
-					onValueChanged?.(choice.value)
+					if (setProps && (autoRefresh ?? true)) setProps({ value: choice[0] })
+					onValueChanged?.(choice[0])
 				}}
 				style={{
 					// default
@@ -54,7 +54,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 					)
 				}}>
 
-				{choice.title}
+				{choice[1]}
 			</StackPanel>
 		}}
 		layout={layout ?? StackPanel}
@@ -95,14 +95,14 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 	const domainTuples = inputDomainTuples(domain)
 
 	return <View
-		sourceData={[...domainTuples, ...(selectAllLabel ? [{ value: selectAllLabel, title: selectAllLabel }] : [])]}
+		sourceData={[...domainTuples, ...(selectAllLabel ? [selectAllLabel, ""] : [])]}
 		layout={layout ?? StackPanel}
 		orientation={orientation}
 		itemTemplate={_ => {
-			const { value: choice, children, index } = _
+			const { value: choice, index } = _
 
-			const selected = (value ?? []).includes(choice.value)
-			const selectAll = (selectAllLabel && index === domainTuples.length)
+			const selected = (value ?? []).includes(choice[0])
+			const selectAll = (selectAllLabel && index === domain.length)
 			// console.log(`selected: ${selected}`)
 
 			return <div
@@ -110,10 +110,10 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 					// console.log(`onClick of InputChoiceButtons: ${choiceValue}`)
 					const effectiveValue = value ?? []
 					const newValues = selectAll
-						? inputDomainValues(domain) // select all choices
-						: effectiveValue.includes(choice.value)
-							? effectiveValue.filter(_ => _ !== choice.value)
-							: [...effectiveValue, choice.value]
+						? domain.map(_ => _[0]) // select all choices
+						: effectiveValue.includes(choice[0])
+							? effectiveValue.filter(_ => _ !== choice[0])
+							: [...effectiveValue, choice[0]]
 
 					if (setProps && (autoRefresh ?? true)) setProps({ value: newValues })
 					onValueChanged?.(newValues)
@@ -130,7 +130,7 @@ export const InputMultiChoiceButtons: InputComponent<InputMultiChoiceProps<strin
 					...(selected ? selectedItemStyle : {}),
 					fontStyle: selectAll ? "italic" : "normal"
 				}}>
-				{choice.title}
+				{choice[1]}
 			</div>
 		}}
 		style={{

@@ -1,4 +1,4 @@
-import { isArray } from "@agyemanjp/standard"
+import { Tuple } from "@agyemanjp/standard"
 
 import type { CSSProperties } from "../../html"
 import type { Component } from "../../common"
@@ -17,18 +17,9 @@ export type InputProps<TVal> = {
 	autoRefresh?: boolean
 }
 
-/** Return input domain values array */
-export function inputDomainValues<T>(choices: InputDomain<T>) {
-	return isArray(choices)
-		? choices.map(choice => choice.value)
-		: choices.values
-}
-
 /** Return input domain tuples (value/title) array */
 export function inputDomainTuples<T>(choices: InputDomain<T>) {
-	return isArray(choices)
-		? choices
-		: choices.values.map(v => ({ value: v, title: String(v) }))
+	return choices.map(_ => [_[0], _[1] === "" ? _[0] : _[1]] as Tuple<T, string>)
 }
 
-export type InputDomain<TVal> = { values: TVal[] } | ({ value: TVal, title: string }[])
+export type InputDomain<TVal> = Tuple<TVal, string>[]

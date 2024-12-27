@@ -26,20 +26,19 @@ export const DropdownChoiceInput: InputComponent<Props> = (props, setProps) => {
 
 		{inputDomainTuples(choices).map((option, index) =>
 			<option
-				selected={option.value === value}
-				value={option.value}
-				title={option.title}
+				selected={option[0] === value}
+				value={option[0]}
+				title={option[1]}
 				style={{
-					...option.value === value ? selectedItemStyle ?? {} : {},
+					...option[0] === value ? selectedItemStyle ?? {} : {},
 					...optionStyle ?? {}
 				}}>
 
-				{typeof option === "string" ? option : option.title}
+				{typeof option === "string" ? option : option[1]}
 			</option>
 		)}
 	</select>
 }
-
 
 
 type Props = InputProps<string> & {

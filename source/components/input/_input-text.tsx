@@ -1,6 +1,6 @@
 import { getIdUnique, type OmitX } from "@agyemanjp/standard"
 
-import { createElement, Fragment, inputDomainValues, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
+import { createElement, Fragment, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
 
 export const InputText: InputComponent<Props> = (props, setProps) => {
 	const {
