@@ -2,11 +2,16 @@ import { isFunction, assert } from "@agyemanjp/standard"
 import type { StdEltProps } from "../common"
 import type { ComponentElement, ProperElement } from "./common"
 
+/** Separator for instance id segments. Must be a character that is not valid in an HTML Id */
+const ID_SEGMENTS_SEPARATOR = " "
+
 /** Generates a stable instance id for a component element in a specific position */
 export function getCompInstanceId<P extends StdEltProps>(args: { elt: ComponentElement<P>, position: UITreePosition }) {
 	const { elt, position } = args
-	const effectiveTag = isFunction(elt.type) ? elt.type.name : elt.type
-	return `${effectiveTag}-${getEffectiveHtmlId({ elt, position })}-${position.intrinsificationIndex}`
+	const eltType = isFunction(elt.type) ? elt.type.name : elt.type
+	const htmlId = getEffectiveHtmlId({ elt, position })
+
+	return `${eltType}${ID_SEGMENTS_SEPARATOR}${htmlId}${ID_SEGMENTS_SEPARATOR}${position.intrinsificationIndex}`
 }
 
 /** Generates a stable html id for a proper element in a specific position */
@@ -18,8 +23,9 @@ export function getEffectiveHtmlId<P extends StdEltProps>(args: { elt: ProperEle
 
 /** Extracts the HTML element id from a component instance id */
 export function instanceToHtmlId(compInstanceId: string) {
-	const id = compInstanceId.split("-")[1]
-	return (assert(id, `Id does not exist`), id)
+	const id = compInstanceId.split(ID_SEGMENTS_SEPARATOR)[1]
+	assert(id, `HTML Id not found in component instance id "${compInstanceId}"`)
+	return id
 }
 
 /** Set html id on a proper element, if passed, and not already set */
