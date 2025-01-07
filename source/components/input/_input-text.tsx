@@ -2,6 +2,7 @@ import { getIdUnique, type OmitX } from "@agyemanjp/standard"
 
 import { createElement, Fragment, type InputComponent, type InputHTMLAttributes, type InputProps } from "../.."
 
+
 export const InputText: InputComponent<Props> = (props, setProps) => {
 	const {
 		type,
@@ -38,7 +39,6 @@ export const InputText: InputComponent<Props> = (props, setProps) => {
 			}
 		</>
 }
-
 
 type Props = InputProps<string> & OmitX<InputHTMLAttributes<HTMLInputElement>, "type"> & {
 	choices?: string[]

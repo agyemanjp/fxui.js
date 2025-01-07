@@ -184,7 +184,7 @@ function setProps<P extends Rec>(compInstanceId: string, newPropsDelta: Partial<
 	if (refreshUI) {
 		const htmlId = instanceToHtmlId(compInstanceId)
 		const container = (assert(document, `Document object, needed for re-render, not found`), document.getElementById(htmlId))
-		assert(container, `Container to target for re-render does not exist`)
+		assert(container, `Container to target for re-render "${htmlId}" does not exist`)
 		// console.log(`Container target for re-rendering elt for instance id "${compInstanceId}": ${(container)}`)
 
 		const dom = render(updatedElt, entry.pos)

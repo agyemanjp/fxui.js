@@ -21,7 +21,7 @@ export const InputChoiceButtons: InputComponent<InputChoiceProps<string> & Props
 	} = props
 
 	return <View
-		sourceData={(domain) ?? []}
+		sourceData={inputDomainTuples(domain) ?? []}
 		itemTemplate={_ => {
 			const { value: choice, children, index } = _
 
